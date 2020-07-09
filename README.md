@@ -6,7 +6,7 @@ Of the many types, the coveted H1-B visas are used by tech companies to fill in 
 
 
 ## Problem
-A small group wants to investigate the impact of this action.  They would like to answer such questions as how many people apply for H1-B visa and what type of positions are filled.  With the effects of COVID-19 and the reduction in educated immigrants, can US citizens fill the need?  Are certain countires targeted for H1-B visas?  
+A small group wants to investigate the impact of this action. They would like to answer questions such as how many people apply for H1-B visas and what type of positions are being filled. With the effects of COVID-19 and the reduction of immigrants, can US citizens fill the talent void?  Are certain countries targeted for H1-B visas?  
 
 The goal is to manage disparate data across various systems and provide a [Single Source of Truth](https://www.forbes.com/sites/brentdykes/2018/01/10/single-version-of-truth-why-your-company-must-speak-the-same-data-language/#1a6047b81ab3) for this H1-B visa information.
 
@@ -32,6 +32,8 @@ The underlying database structure will allow users to perform ad-hoc queries to 
 | lon |Longitude of the employer worksite.|
 | lat |Latitude of the employer worksite.|
 
+---
+
 * [Nonimmigrant Visa Issuances by Visa Class and by Nationality](https://public.opendatasoft.com/explore/dataset/fys97-16_nivdetailtable/table/?sort=-year)
 * 2,070 records
 
@@ -41,6 +43,8 @@ The underlying database structure will allow users to perform ad-hoc queries to 
 | Type | Visa type (H1-B) |
 | Nationality | national or ethnic character of group |
 | count | number of applicants |
+
+---
 
 * [US Minimum Wage By State](https://www.kaggle.com/lislejoem/us-minimum-wage-by-state-from-1968-to-2017)
 * 2,750 records
@@ -57,6 +61,8 @@ The underlying database structure will allow users to perform ad-hoc queries to 
 | High.2018 | This is the 2018-equivalent dollars for High.Value. |
 | Low.2018 | This is the 2018-equivalent dollars for Low.Value. |
 
+---
+
 * [World Happiness Data](https://www.kaggle.com/arielyeung/world-happiness-data)
 * 1,562 records
 
@@ -65,14 +71,14 @@ The underlying database structure will allow users to perform ad-hoc queries to 
 | country | country|
 | year | year of survey |
 | Life Ladder | happiness score or subjective well-being |
-| Log GDP per capita |  statistics of GDP per capita (variable name gdp) in purchasing power parity (log scale) |
+| Log GDP per capita |  statistics of GDP per capita in purchasing power parity (log scale) |
 | Social support |  The national average of the binary responses (either 0 or 1) to the GWP question *If you were in trouble, do you have relatives or friends you can count on to help you whenever you need them, or not?* |
 | Healthy life expectancy at birth |  Healthy life expectancies at birth are based on the data extracted from the World Health Organization’s (WHO) Global Health Observatory data repository.|
 | Freedom to make life choices | The national average of responses to the GWP question *Are you satisfied or dissatisfied with your freedom to choose what you do with your life?* |
 | Generosity | The residual of regressing national average of response to the GWP question *Have you donated money to a charity in the past month?* on GDP per capita.|
 | Perceptions of corruption | The national average of the survey responses to two questions in the GWP: *Is corruption widespread throughout the government or not* and *Is corruption widespread within businesses or not?* The overall perception is just the average of the two 0-or-1 responses. In case the perception of government corruption is missing, we use the perception of business corruption as the overall perception. The corruption perception at the national level is just the average response of the overall perception at the individual level.|
 | Positive affect | Defined as the average of three positive affect measures in GWP: happiness, laugh and enjoyment in the Gallup World Poll waves 3-7. These measures are the responses to the following three questions, respectively: *Did you experience the following feelings during A LOT OF THE DAY yesterday? How about Happiness?*, *Did you smile or laugh a lot yesterday?*, and *Did you experience the following feelings during A LOT OF THE DAY yesterday? How about Enjoyment?* |
-| Negative affect |  defined as the average of three negative affect measures in GWP. They are worry, sadness and anger, respectively the responses to *Did you experience the following feelings during A LOT OF THE DAY yesterday? How about Worry?*, *Did you experience the following feelings during A LOT OF THE DAY yesterday? How about Sadness?*, and *Did you experience the following feelings during A LOT OF THE DAY yesterday? How about Anger?*|
+| Negative affect |  Defined as the average of three negative affect measures in GWP. They are worry, sadness and anger, respectively the responses to *Did you experience the following feelings during A LOT OF THE DAY yesterday? How about Worry?*, *Did you experience the following feelings during A LOT OF THE DAY yesterday? How about Sadness?*, and *Did you experience the following feelings during A LOT OF THE DAY yesterday? How about Anger?*|
 | Confidence in national government | unsure how calculated |
 | Democratic Quality | unsure how calculated |
 | Delivery Quality | unsure how calculated |
@@ -81,6 +87,8 @@ The underlying database structure will allow users to perform ad-hoc queries to 
 | GINI index (World Bank estimate) | GINI index |
 | average 2000-15 | average GINI index from 2000-15 |
 | gini of household income reported in Gallup, by wp5-year | Household Income International Dollars |
+
+---
 
 * [US City demographics, data comes from the US Census Bureau's 2015 American Community Survey](https://public.opendatasoft.com/explore/dataset/us-cities-demographics/export/)
 * 2,891 records
@@ -100,8 +108,7 @@ The underlying database structure will allow users to perform ad-hoc queries to 
 | Race | race, ethnic group | 
 | Count | race count |
 
-
-
+---
 
 ## 2 - Explore and Assess the Data
 
@@ -111,7 +118,7 @@ The data files are loaded into staging tables for procesing.  The table structur
 
 ## 3 - Define the Data Model
 
-Since the goal is data exploration, the data is normalized for query execution.  Each table is given a primary key and data extracted as needed.  For example, in the `stage_h1b_petitions` table, the `worksite` column was separated in columns `city` and `fk_states` in `h1b_petitions`.
+Since the goal is data exploration, the data is normalized for query execution.  Each table is given a primary key and data extracted as needed.  For example, in the `stage_h1b_petitions` table, the `worksite` column was separated into columns `city` and `fk_states` in `h1b_petitions`.
 
 ![Entity Relation Diagram](./images/erd.png)
 
@@ -128,9 +135,10 @@ The workflow:
 
 4.  `stage_data_quality`:  Ensure staging tables loaded properly by verifying tables counts match number of lines in file.
 
-5.  `truth_states`:  Create states table.
+5.  `truth_states`:  Create `states`
+ table.
 
-6.  `truth_case_status`:  Create case_status table.
+6.  `truth_case_status`:  Create `case_status` table.
 
 7.  `truth_min_wage`, `truth_us_city_demographics`, `truth_world_happiness`,
      `truth_h1b_nationality`, `truth_h1b_petitions`:  If configured properly, load remaining tables simultaneously from staging tables.
@@ -170,6 +178,13 @@ The workflow:
                         |---- stage_pg.py
                         |---- truth_pg.py
 
+`README.md`: This file
+
+#### images
+* `erd.png`: final *truth* tables
+* `staging_tables.png`: staging tables
+* `workflow.png`: Airflow workflow
+
 #### dags
 * `create_relations.sql`: SQL script to define primary keys, table relationships, constraints, and indexes.
 * `create_staging_tables.sql`: SQL script to create staging tables.  These tables hold the raw data from the imported files.
@@ -193,19 +208,22 @@ The workflow:
 ## Initial Tech Stack
 * Docker container running Apache Airflow, v1.10.9, running in `LocalExecutor` mode
 * PostgreSQL 10.12 running on Linux Mint
+* Python 3.7.7
 
 ## Whatif Scenarios
 1.  The data was increased by 100x.
 
-> As the source files increase in size or as more source files are introduced, the files could be be offloaded to cloud storage to reduce local storage requirements, e.g. Amazon S3, Digital Ocean Spaces (Object Storage).  Airflow could be reconfigured to support additional workers and/or offloaded to the cloud for improved hardware.  The local Postgres database could be offloaded to Amazon RDS.
+> As the size of source files increase and more files introduced, they could be offloaded to cloud storage to reduce local storage requirements.  Airflow could be reconfigured to support additional workers.  It could also be cloud based to take advantage of improved hardware.  The local Postgres database could also be offloaded to Amazon RDS. 
 
 2.  The database needed to be accessed by 100+ people.
 
-> Offload the local Postgres database to the cloud.  A fully managed or semi-managed cloud solution offers greater visability and improved hardware.  Compared to Redshift, Amazon RDS provides 64 TB storage limits, lower maintainance requirements, lower costs, and better performance since the queries do not span millions of rows.
+> Offload the local Postgres database to the cloud, e.g Amazon RDS. A fully managed or semi-managed cloud solution offers greater visibility and improved hardware.  Compared to Redshift, Amazon RDS provides 64 TB storage limits, lower maintenance requirements and operating costs, and better performance since the queries do not span millions of rows.  Database monitoring and tuning could also improve the user experience.
 
 ## Findings
 
 #### H1B visa from each country and happiness index
+Compare the happiness index of those countries that applied for H1-B Visas with the happiness index of the United States.
+
        SELECT
               hbn.year,
               hbn.nationality country,
@@ -250,6 +268,8 @@ Sample results:
 
 
 #### Countries whose happiness index > than US
+Identify those countries that applied for H1-B Visas whose happiness index is greater than that of the United States.
+
        SELECT
               v1.year,
               v1.country
@@ -288,6 +308,8 @@ Sample results:
 > **Surprisingly for a given year there were no immigrants from countries whose happiness index was higher than the US' that applied for an H1-B visa.**
 
 #### Approved H1B visas, job title, wage, and current min wage (lo/hi)
+For those approved H1-B Visas, compare the prevailing wage with the min/max wage for the employer's city and state.  It is evident that these are well paid positions.
+
        SELECT
               hbp.year,
               hbp.employer_name,
@@ -324,6 +346,8 @@ Sample results:
 2011 | PARINTO GLOBAL ENTERPRISES, LLC | Marketing Managers | DIRECTOR OF MARKETING | Doral | Florida | 7.25 | 7.25 | 64688
 
 #### Sample job titles
+A sampling of job titles reveals professional positions.
+
        SELECT
               DISTINCT hbp.job_title
        FROM
@@ -349,6 +373,8 @@ Sample results:
 |FIELD AUTOMATION ENGINEER
 
 #### Diversity of H1B destinations
+Based upon the approved H1-B Visas, what are the demographics based upon the employer's address?
+
        SELECT
               initcap(hbp.city) city,
               initcap(s2.state) state,
@@ -378,5 +404,6 @@ Alexandria | Virginia | 36.6 | Hispanic or Latino | 25573
 Alexandria | Virginia | 36.6 | Asian | 13315
 Alexandria | Virginia | 36.6 | American Indian and Alaska Native | 1133
 Alexandria | Virginia | 36.6 | Black or African-American | 37168
+
 ***
 ###### Udacity's Data Engineering Capstone Project July 2020

@@ -9,7 +9,7 @@ Of the many types, the coveted H1-B visas are used by tech companies to fill voi
 ## Problem
 A small group wants to investigate the impact of this action. They are interested in how many people apply for H1-B visas and what type of positions are being filled.  With the effects of COVID-19 and the overall [reduction of immigrants](https://www.washingtonpost.com/opinions/trump-uses-the-coronavirus-to-impede-immigration-his-aim-at-foreign-students-is-a-new-low/2020/07/07/ec3ca966-c06a-11ea-b178-bb7b05b94af1_story.html), **can US citizens fill the talent void?** Are certain countries targeted for H1-B visas? Are certain ethnic groups more prevalent? These are a few of the questions to investigate.
 
-The goal is to manage disparate data from various sources and provide a [Single Source of Truth](https://www.forbes.com/sites/brentdykes/2018/01/10/single-version-of-truth-why-your-company-must-speak-the-same-data-language/#1a6047b81ab3) for future H1-B data marts.
+The goal is to manage disparate data from various sources and provide a **Single Source of Truth** data warehouse for future [Single Versions of Truth](https://www.forbes.com/sites/brentdykes/2018/01/10/single-version-of-truth-why-your-company-must-speak-the-same-data-language/#1a6047b81ab3) data marts.
 
 The final database structure will allow users to perform ad-hoc queries to explore the data.
 
@@ -211,10 +211,10 @@ The workflow:
 
 ## Tech Stack
 * Docker container running Apache Airflow, v1.10.9, running in `LocalExecutor` mode
-> Airflow provides clear visibility and management of the data workflow.  It can be scaled to handle various workloads.   It can run on a single node or clustered into multiple nodes.  Each node can have 1 to N workers.
+> Airflow provides clear visibility and management of the data workflow.  It can be scaled to handle various workloads.   It can run as a single node or clustered into multiple nodes.  Each node can have 1 to N workers.
 
 * PostgreSQL 10.12 running on Linux Mint
-> A free and robust RDBMS that is available on various operating systems.  It provides easy on-prem development and scales easily to the cloud.  It was chosen to create the staging and truth tables needed for the source of truth data warehouse.  It also supports columnar storage through [extensions](https://kokes.github.io/blog/2020/05/23/postgres-column-store.html).  This could simplify the creation of future data marts.
+> A free and robust RDBMS that is available on various operating systems.  It provides easy on-prem development and scales easily to the cloud.  It was chosen to create the staging and truth tables needed for the source of truth data warehouse.  It also supports columnar storage through [extensions](https://kokes.github.io/blog/2020/05/23/postgres-column-store.html) which could simplify the creation of future data marts.
 
 * Python 3.7.7
 > Core language for Apache Airflow.

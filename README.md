@@ -3,15 +3,15 @@
 # Introduction
 On June 22, 2020 President Donald Trump signed an executive order limiting the number of immigrants entering the United States.  Effective June 24 to at least the end of 2020, the US will stop the issuance of a variety of visas for foreign workers.  
 
-Of the many types, the coveted H1-B visas are used by tech companies to fill voids in talent.  Our most influential and profitable companies -- Google, Amazon, Apple, and Facebook are [deeply disappointed by this proclamation](https://www.ibtimes.com/trump-immigration-crackdown-tech-giants-google-apple-amazon-others-slam-executive-2999121).  In 2019, Google and Amazon were each granted roughly [9,000 H1-B visa applications](https://www.msn.com/en-us/money/markets/amazon-google-twitter-and-other-tech-companies-are-speaking-out-against-trumps-freeze-on-immigrant-work-visas/ar-BB15QWe9).  
+Of the many types, the coveted H1-B visas are used by tech companies to fill voids in talent.  From a historical note, H1-B visas are a result of the [Immigration Act of 1965](https://en.wikipedia.org/wiki/Immigration_and_Nationality_Act_of_1965#:~:text=The%20Immigration%20and%20Nationality%20Act%20of%201965%20%28Pub.L.,States%20since%20the%20Emergency%20Quota%20Act%20of%201921.).  Our most influential and profitable companies -- Google, Amazon, Apple, and Facebook are [deeply disappointed by this proclamation](https://www.ibtimes.com/trump-immigration-crackdown-tech-giants-google-apple-amazon-others-slam-executive-2999121).  In 2019, Google and Amazon were each granted roughly [9,000 H1-B visa applications](https://www.msn.com/en-us/money/markets/amazon-google-twitter-and-other-tech-companies-are-speaking-out-against-trumps-freeze-on-immigrant-work-visas/ar-BB15QWe9).  
 
 
 ## Problem
-A small group wants to investigate the impact of this action. They are interested in how many people apply for H1-B visas and what type of positions are being filled.  With the effects of COVID-19 and the [reduction of immigrants](https://www.washingtonpost.com/opinions/trump-uses-the-coronavirus-to-impede-immigration-his-aim-at-foreign-students-is-a-new-low/2020/07/07/ec3ca966-c06a-11ea-b178-bb7b05b94af1_story.html), can US citizens fill the talent void? Are certain countries targeted for H1-B visas? Are certain ethnic groups more prevalent? These are a few of the questions to investigate.
+A small group wants to investigate the impact of this action. They are interested in how many people apply for H1-B visas and what type of positions are being filled.  With the effects of COVID-19 and the overall [reduction of immigrants](https://www.washingtonpost.com/opinions/trump-uses-the-coronavirus-to-impede-immigration-his-aim-at-foreign-students-is-a-new-low/2020/07/07/ec3ca966-c06a-11ea-b178-bb7b05b94af1_story.html), **can US citizens fill the talent void?** Are certain countries targeted for H1-B visas? Are certain ethnic groups more prevalent? These are a few of the questions to investigate.
 
 The goal is to manage disparate data from various sources and provide a [Single Source of Truth](https://www.forbes.com/sites/brentdykes/2018/01/10/single-version-of-truth-why-your-company-must-speak-the-same-data-language/#1a6047b81ab3) for future H1-B data marts.
 
-The underlying database structure will allow users to perform ad-hoc queries to explore the data.
+The final database structure will allow users to perform ad-hoc queries to explore the data.
 
 ## 1 - Scope the Project and Gather Data
 
@@ -248,7 +248,9 @@ The workflow:
 > 5.  update the `truth_dict` and/or `dq_checks` hash maps in the H1B-Visa DAG to perform any quality checks,
 > 6.  update `create_relations.sql` to define the new table's primary key, constraints, and indexes.
 
-## Findings
+> Finally, trigger the DAG to execute the workflow.
+
+## Some Things We Learned
 
 #### H1B visa from each country and happiness index
 Compare the happiness index of those countries that applied for H1-B Visas with the happiness index of the United States.
@@ -303,7 +305,7 @@ Sample results:
 2016 | Tanzania | 2 | 140 | 21
 2016 | Togo | 1 | 129 | 21
 
-> Interesting footnote.  An initial investigation revealed that in 2011 there were no approved H1-B visas.  This does not seem correct.  Since the h1b_petitions table does not have the immigrant's country of origin, we have to infer this information from the h1b_nationality table.  This table shows the number of H1-B applicants by nationality.  A closer look reveals that there were zero H1-B applicants in 2011.  A startling find that spurs more questions.
+> Interesting footnote.  An initial investigation revealed that in 2011 there were no approved H1-B visas.  This does not seem correct.  Since the h1b_petitions table does not have the immigrant's country of origin, we have to infer this information from the h1b_nationality table.  This table shows the number of H1-B applicants by nationality.  A closer look revealed that there were, in fact, zero H1-B applicants in 2011.  A startling find that spurred more questions.
 
 ---
 

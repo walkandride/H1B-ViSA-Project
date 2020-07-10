@@ -3,7 +3,7 @@
 # Introduction
 On June 22, 2020 President Donald Trump signed an executive order limiting the number of immigrants entering the United States.  Effective June 24 to at least the end of 2020, the US will stop the issuance of a variety of visas for foreign workers.  
 
-Of the many types, the coveted H1-B visas are used by tech companies to fill in voids in talent.  Our most influential and profitable companies -- Google, Amazon, Apple, and Facebook are [deeply disappointed by this proclamation](https://www.ibtimes.com/trump-immigration-crackdown-tech-giants-google-apple-amazon-others-slam-executive-2999121).  In 2019, Google and Amazon were each granted roughly [9,000 H1-B visa applications](https://www.msn.com/en-us/money/markets/amazon-google-twitter-and-other-tech-companies-are-speaking-out-against-trumps-freeze-on-immigrant-work-visas/ar-BB15QWe9).  
+Of the many types, the coveted H1-B visas are used by tech companies to fill voids in talent.  Our most influential and profitable companies -- Google, Amazon, Apple, and Facebook are [deeply disappointed by this proclamation](https://www.ibtimes.com/trump-immigration-crackdown-tech-giants-google-apple-amazon-others-slam-executive-2999121).  In 2019, Google and Amazon were each granted roughly [9,000 H1-B visa applications](https://www.msn.com/en-us/money/markets/amazon-google-twitter-and-other-tech-companies-are-speaking-out-against-trumps-freeze-on-immigrant-work-visas/ar-BB15QWe9).  
 
 
 ## Problem
@@ -116,7 +116,7 @@ Barring errors, these sample datasets appear to be updated yearly.  Yearly updat
 
 ## 2 - Explore and Assess the Data
 
-The data files are loaded into staging tables for procesing.  The table structure follows.
+The data files are loaded into staging tables for processing.  The table structure follows.
 
  ![Staging Tables](./images/staging_tables.png)
 
@@ -234,7 +234,19 @@ The workflow:
 
 3.  The pipelines would be run on a daily basis by 7 am every day.
 
-> The workflow process completes in about 10 minutes on modest hardware.  Daily updates followed by reprocessing should result in minimal downtime for the user.
+> The workflow process completes in under 20 minutes on modest hardware.  Daily updates followed by reprocessing during off-hours should result in minimal downtime for the user.
+
+4.  A new dataset is discovered.
+
+> Airflow's flexible workflow management allows the easy addition of new files.  
+
+> First create a staging table to hold the file contents by updating `create_staging_tables.sql`.  Then update the H1B-Visa DAG: 
+> 1.  create a `StageToPostgresOperator` operator for the new staging table,
+> 2.  create a  `DataQualityOperator` operator for the new staging table,
+> 3.  update `sql_queries.py` and create a new class constant to create and populate the truth table from this staging table,
+> 4.  create a `TruthToPostgresOperator` operator to call the class constant from the above step,
+> 5.  update the `truth_dict` and/or `dq_checks` hash maps in the H1B-Visa DAG to perform any quality checks,
+> 6.  update `create_relations.sql` to define the new table's primary key, constraints, and indexes.
 
 ## Findings
 
@@ -272,16 +284,26 @@ Compare the happiness index of those countries that applied for H1-B Visas with 
 Sample results:
 | year | country | cnt | happiness_rank_for_yr | us_happiness_rank |
 | ---: | :------ | --: | --------------------: | ----------------: |
-2005 | Egypt | 276 | 25
-2007 | Burkina Faso | 16 | 9 | 3
-2007 | Cameroon | 71 | 88 | 3
-2007 | Chad | 8 | 95 | 3
 2007 | Egypt | 282 | 42 | 3
 2007 | Ghana | 232 | 52 | 3
-2007 | Kenya | 363 | 81 | 3
-2007 | Liberia | 3 | 100 | 3
-2007 | Malawi | 8 | 66 | 3
-2007 | Mozambique | 1 | 71 | 3
+2008 | Rwanda | 3 | 94 | 10
+2008 | Senegal | 62 | 77 | 10
+2009 | Mali | 13 | 109 | 8
+2009 | Mauritania | 5 | 91 | 8
+2010 | Tanzania | 69 | 124 | 14
+2010 | Tunisia | 28 | 69 | 14
+2012 | Benin | 48 | 141 | 17
+2012 | Botswana | 30 | 95 | 17
+2013 | Uganda | 218 | 126 | 12
+2013 | Zambia | 154 | 70 | 12
+2014 | Sierra Leone | 3 | 109 | 12
+2014 | South Africa | 2 | 95 | 12
+2015 | Morocco | 9 | 77 | 15
+2015 | Mozambique | 1 | 112 | 15
+2016 | Tanzania | 2 | 140 | 21
+2016 | Togo | 1 | 129 | 21
+
+> Interesting footnote.  An initial investigation revealed that in 2011 there were no approved H1-B visas.  This does not seem correct.  Since the h1b_petitions table does not have the immigrant's country of origin, we have to infer this information from the h1b_nationality table.  This table shows the number of H1-B applicants by nationality.  A closer look reveals that there were zero H1-B applicants in 2011.  A startling find that spurs more questions.
 
 ---
 

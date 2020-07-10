@@ -1,3 +1,4 @@
+ ![H1B Visa](./images/h1b.jpg)
 
 # Introduction
 On June 22, 2020 President Donald Trump signed an executive order limiting the number of immigrants entering the United States.  Effective June 24 to at least the end of 2020, the US will stop the issuance of a variety of visas for foreign workers.  
@@ -6,15 +7,18 @@ Of the many types, the coveted H1-B visas are used by tech companies to fill in 
 
 
 ## Problem
-A small group wants to investigate the impact of this action. They would like to answer questions such as how many people apply for H1-B visas and what type of positions are being filled. With the effects of COVID-19 and the reduction of immigrants, can US citizens fill the talent void?  Are certain countries targeted for H1-B visas?  
+A small group wants to investigate the impact of this action. They are interested in how many people apply for H1-B visas and what type of positions are being filled.  With the effects of COVID-19 and the [reduction of immigrants](https://www.washingtonpost.com/opinions/trump-uses-the-coronavirus-to-impede-immigration-his-aim-at-foreign-students-is-a-new-low/2020/07/07/ec3ca966-c06a-11ea-b178-bb7b05b94af1_story.html), can US citizens fill the talent void? Are certain countries targeted for H1-B visas? Are certain ethnic groups more prevalent? These are a few of the questions to investigate.
 
-The goal is to manage disparate data across various systems and provide a [Single Source of Truth](https://www.forbes.com/sites/brentdykes/2018/01/10/single-version-of-truth-why-your-company-must-speak-the-same-data-language/#1a6047b81ab3) for this H1-B visa information.
+The goal is to manage disparate data from various sources and provide a [Single Source of Truth](https://www.forbes.com/sites/brentdykes/2018/01/10/single-version-of-truth-why-your-company-must-speak-the-same-data-language/#1a6047b81ab3) for future H1-B data marts.
 
 The underlying database structure will allow users to perform ad-hoc queries to explore the data.
 
 ## 1 - Scope the Project and Gather Data
 
 ### Datasets
+
+Barring errors, these sample datasets appear to be updated yearly.  Yearly updates of this data is a reasonable assumption.
+
 * [H-1B visa Petitions for the period 2011 to 2016](https://www.kaggle.com/nsharan/h-1b-visa)
 * 3,002,458 records
 
@@ -39,8 +43,8 @@ The underlying database structure will allow users to perform ad-hoc queries to 
 
 | Column         | Description |
 | :------------- | :-------------------------------------------- | 
-| year | Year issued |
-| Type | Visa type (H1-B) |
+| year | year issued |
+| Type | visa type (H1-B) |
 | Nationality | national or ethnic character of group |
 | count | number of applicants |
 
@@ -83,10 +87,10 @@ The underlying database structure will allow users to perform ad-hoc queries to 
 | Democratic Quality | unsure how calculated |
 | Delivery Quality | unsure how calculated |
 | Standard deviation of ladder by country-year | standard deviation of country's happiness score  |
-| Standard deviation/Mean of ladder by country-year | standard deviation of country's happiness score |
+| Standard deviation/Mean of ladder by country-year | standard deviation divided by mean of country's happiness score |
 | GINI index (World Bank estimate) | GINI index |
 | average 2000-15 | average GINI index from 2000-15 |
-| gini of household income reported in Gallup, by wp5-year | Household Income International Dollars |
+| gini of household income reported in Gallup, by wp5-year | household income international dollars |
 
 ---
 
@@ -131,7 +135,7 @@ The workflow:
 
 2. `create_staging_tables`:  Build staging tables to receive import files.
 
-3.  `stage_nationality`, `stage_h1b_petitions`, `stage_min_wage`,`stage_us_city_demographics`, `stage_world_happiness`:  If configured properly, load staging tables simultaneously from files.
+3.  `stage_nationality`, `stage_h1b_petitions`, `stage_min_wage`,`stage_us_city_demographics`, `stage_world_happiness`:  Load staging tables simultaneously from files.
 
 4.  `stage_data_quality`:  Ensure staging tables loaded properly by verifying tables counts match number of lines in file.
 
@@ -141,7 +145,7 @@ The workflow:
 6.  `truth_case_status`:  Create `case_status` table.
 
 7.  `truth_min_wage`, `truth_us_city_demographics`, `truth_world_happiness`,
-     `truth_h1b_nationality`, `truth_h1b_petitions`:  If configured properly, load remaining tables simultaneously from staging tables.
+     `truth_h1b_nationality`, `truth_h1b_petitions`:  Load remaining tables simultaneously from staging tables.
 
 8.  `truth_data_quality1`:  Ensure staging table record counts match destination table counts.
 
@@ -182,8 +186,8 @@ The workflow:
 
 #### images
 * `erd.png`: final *truth* tables
-* `staging_tables.png`: staging tables
-* `workflow.png`: Airflow workflow
+* `staging_tables.png`: destination tables for import files
+* `workflow.png`: Airflow workflow screenshot with accompanying documentation
 
 #### dags
 * `create_relations.sql`: SQL script to define primary keys, table relationships, constraints, and indexes.
@@ -201,23 +205,36 @@ The workflow:
 * `sql_queries.py`: SQL defintions used to extract and transform data from staging table to final tables.
 
 #### plugins/operators
-* `data_quality.py`:  DAG data quality check operator.
-* `stage_pg.py`: DAG load staging tables operator.
-* `truth_pg.py`: DAG truth table load operator.
+* `data_quality.py`:  DAG operator to perform data quality checks.
+* `stage_pg.py`: DAG operator to load staging table.
+* `truth_pg.py`: DAG operator to load truth table.
 
-## Initial Tech Stack
+## Tech Stack
 * Docker container running Apache Airflow, v1.10.9, running in `LocalExecutor` mode
+> Airflow provides clear visibility and management of the data workflow.  It can be scaled to handle various workloads.   It can run on a single node or clustered into multiple nodes.  Each node can have 1 to N workers.
+
 * PostgreSQL 10.12 running on Linux Mint
+> A free and robust RDBMS that is available on various operating systems.  It provides easy on-prem development and scales easily to the cloud.  It was chosen to create the staging and truth tables needed for the source of truth data warehouse.  It also supports columnar storage through [extensions](https://kokes.github.io/blog/2020/05/23/postgres-column-store.html).  This could simplify the creation of future data marts.
+
 * Python 3.7.7
+> Core language for Apache Airflow.
 
 ## Whatif Scenarios
 1.  The data was increased by 100x.
 
-> As the size of source files increase and more files introduced, they could be offloaded to cloud storage to reduce local storage requirements.  Airflow could be reconfigured to support additional workers.  It could also be cloud based to take advantage of improved hardware.  The local Postgres database could also be offloaded to Amazon RDS. 
+> As the size and number of source files increase, offload them to cloud storage.  This reduces local storage requirements as well as improves the availability and security of the data.  
+
+> Configure Airflow to support additional workers.  Implement a cloud solution to take advantage of improved hardware.
+
+> Replace the on-prem Postgres database with a cloud solution such as Postgres on Amazon RDS. 
 
 2.  The database needed to be accessed by 100+ people.
 
-> Offload the local Postgres database to the cloud, e.g Amazon RDS. A fully managed or semi-managed cloud solution offers greater visibility and improved hardware.  Compared to Redshift, Amazon RDS provides 64 TB storage limits, lower maintenance requirements and operating costs, and better performance since the queries do not span millions of rows.  Database monitoring and tuning could also improve the user experience.
+> Migrate the local Postgres database to a cloud based solution, e.g Postgres on Amazon RDS.  A fully managed or semi-managed cloud solution offers greater visibility and improved hardware. Compared to Redshift, Amazon RDS provides 64 TB storage limits, lower maintenance requirements and operating costs, and better performance since the queries do not span millions of rows. Utilize database monitoring and tuning to improve the user experience. 
+
+3.  The pipelines would be run on a daily basis by 7 am every day.
+
+> The workflow process completes in about 10 minutes on modest hardware.  Daily updates followed by reprocessing should result in minimal downtime for the user.
 
 ## Findings
 
@@ -253,8 +270,8 @@ Compare the happiness index of those countries that applied for H1-B Visas with 
 
 
 Sample results:
-| year | country | cnt | happiness_rank_for_yr |
-| ---: | :------ | --: | --------------------: |
+| year | country | cnt | happiness_rank_for_yr | us_happiness_rank |
+| ---: | :------ | --: | --------------------: | ----------------: |
 2005 | Egypt | 276 | 25
 2007 | Burkina Faso | 16 | 9 | 3
 2007 | Cameroon | 71 | 88 | 3
@@ -266,6 +283,7 @@ Sample results:
 2007 | Malawi | 8 | 66 | 3
 2007 | Mozambique | 1 | 71 | 3
 
+---
 
 #### Countries whose happiness index > than US
 Identify those countries that applied for H1-B Visas whose happiness index is greater than that of the United States.
@@ -305,7 +323,9 @@ Identify those countries that applied for H1-B Visas whose happiness index is gr
               1,
               2
 
-> **Surprisingly for a given year there were no immigrants from countries whose happiness index was higher than the US' that applied for an H1-B visa.**
+> Surprisingly for any given year there were no immigrants from countries applying for H1-B visas whose happiness index was higher than the United States.  **Thus all H1-B applicants originated from countries whose happiness index was lower than the United States.**
+
+---
 
 #### Approved H1B visas, job title, wage, and current min wage (lo/hi)
 For those approved H1-B Visas, compare the prevailing wage with the min/max wage for the employer's city and state.  It is evident that these are well paid positions.
@@ -345,6 +365,8 @@ Sample results:
 2011 | EMC CORPORATION | Business Operations Specialists, All Other | BUSINESS CONSULTANT | Hopkinton | Massachusetts | 8 | 8 | 55931
 2011 | PARINTO GLOBAL ENTERPRISES, LLC | Marketing Managers | DIRECTOR OF MARKETING | Doral | Florida | 7.25 | 7.25 | 64688
 
+---
+
 #### Sample job titles
 A sampling of job titles reveals professional positions.
 
@@ -371,6 +393,8 @@ Sample results:
 | SENIOR MOBILE DEVELOPER
 | PHYSICIAN (PEDIATRIC PLASTIC SURGERY)
 |FIELD AUTOMATION ENGINEER
+
+---
 
 #### Diversity of H1B destinations
 Based upon the approved H1-B Visas, what are the demographics based upon the employer's address?

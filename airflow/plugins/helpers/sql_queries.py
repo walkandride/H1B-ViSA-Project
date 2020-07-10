@@ -185,7 +185,13 @@ FROM
     (
         SELECT
             DISTINCT year,
-            nationality,
+            CASE
+                WHEN nationality = 'Congo, Rep. of the (Brazzaville)' then 'Congo (Brazzaville)'
+                WHEN nationality = 'Congo, Rep. of the (Congo Brazzaville)' then 'Congo (Brazzaville)'
+                WHEN nationality = 'Congo, Dem. Rep. of the (Kinshasa)' then 'Congo (Kinshasa)'
+                WHEN nationality = 'Congo, Dem. Rep. of the (Congo Kinshasa)' then 'Congo (Kinshasa)'
+                ELSE nationality
+            END AS nationality,
             count AS cnt
         FROM
             stage_nationality

@@ -9,7 +9,7 @@ Of the many types, the coveted H1-B visas are used by tech companies to fill voi
 ## Problem
 A small group wants to investigate the impact of this action. They are interested in how many people apply for H1-B visas and what type of positions are being filled.  With the effects of COVID-19 and the overall [reduction of immigrants](https://www.washingtonpost.com/opinions/trump-uses-the-coronavirus-to-impede-immigration-his-aim-at-foreign-students-is-a-new-low/2020/07/07/ec3ca966-c06a-11ea-b178-bb7b05b94af1_story.html), **can US citizens fill the talent void?** Are certain countries targeted for H1-B visas? Are certain ethnic groups more prevalent? These are a few of the questions to investigate.
 
-The goal is to manage disparate data from various sources and provide a **Single Source of Truth** data warehouse for future [Single Versions of Truth](https://www.forbes.com/sites/brentdykes/2018/01/10/single-version-of-truth-why-your-company-must-speak-the-same-data-language/#1a6047b81ab3) data marts.
+The goal is to manage disparate data from various sources and provide a **Single Source of Truth** data warehouse for future [Single Version of Truth](https://www.forbes.com/sites/brentdykes/2018/01/10/single-version-of-truth-why-your-company-must-speak-the-same-data-language/#1a6047b81ab3) data marts.
 
 The final database structure will allow users to perform ad-hoc queries to explore the data.
 
@@ -214,10 +214,10 @@ The workflow:
 > Airflow provides clear visibility and management of the data workflow.  It can be scaled to handle various workloads.   It can run as a single node or clustered into multiple nodes.  Each node can have 1 to N workers.
 
 * PostgreSQL 10.12 running on Linux Mint
-> A free and robust RDBMS that is available on various operating systems.  It provides easy on-prem development and scales easily to the cloud.  It was chosen to create the staging and truth tables needed for the source of truth data warehouse.  It also supports columnar storage through [extensions](https://kokes.github.io/blog/2020/05/23/postgres-column-store.html) which could simplify the creation of future data marts.
+> A free and robust RDBMS that is available on various operating systems.  It provides convenient on-prem development and scales easily to the cloud.  It was chosen to create the staging and truth tables needed for the source of truth data warehouse.  It also supports columnar storage through [extensions](https://kokes.github.io/blog/2020/05/23/postgres-column-store.html) which could simplify the creation of future data marts.
 
 * Python 3.7.7
-> Core language for Apache Airflow.
+> Python is the core language for Apache Airflow.
 
 ## Whatif Scenarios
 1.  The data was increased by 100x.
@@ -305,11 +305,11 @@ Sample results:
 2016 | Tanzania | 2 | 140 | 21
 2016 | Togo | 1 | 129 | 21
 
-> Interesting footnote.  An initial investigation revealed that in 2011 there were no approved H1-B visas.  This does not seem correct.  Since the h1b_petitions table does not have the immigrant's country of origin, we have to infer this information from the h1b_nationality table.  This table shows the number of H1-B applicants by nationality.  A closer look revealed that there were, in fact, zero H1-B applicants in 2011.  A startling find that spurred more questions.
+> Interesting footnote.  An initial investigation revealed that in 2011 there were no H1-B visa applicants.  This does not seem correct.  A closer at both the source table, stage_nationality, and truth table, h1b_nationality, in fact, shows zero H1-B applicants in 2011.  A startling find that spurred more questions.
 
 ---
 
-#### Countries whose happiness index > than US
+#### Countries whose happiness index is greater than the US
 Identify those countries that applied for H1-B Visas whose happiness index is greater than that of the United States.
 
        SELECT
